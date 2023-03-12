@@ -13,14 +13,12 @@ def on_connect(client, userdata, flags, rc):
 def on_message(client, userdata, msg):
     message = msg.payload.decode()
     dt_string = datetime.now().strftime("%Y%m%d-%H%M%S")
-    print("From " + msg.topic + ": " + message)
+    print("MQTT Post in " + msg.topic + "\n" + message + "\n")
     if (msg.topic == "esp1/testTopic"):
-        print("MQTT post from ESP1")
         f = open("esp1/{}.txt".format(dt_string), 'w')
         f.write(message)
         f.close()
     elif (msg.topic == "esp2/testTopic"):
-        print("MQTT post from ESP2")
         f = open("esp2/{}.txt".format(dt_string), 'w')
         f.write(message)
         f.close()
