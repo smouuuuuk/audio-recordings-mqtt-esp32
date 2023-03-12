@@ -88,7 +88,7 @@ void checkIfButtonPressed(){
     alreadyPressed = true;
     client.publish("esp1/testTopic", "Test Message from ESP1");
     Serial.println("Message Sent to esp1/testTopic");
-  } else if (alreadyPressed && !timeToRelease) {
+  } else if (alreadyPressed && !timeToRelease && !digitalRead(buttonInput)) {
     timeToRelease = millis() + 500;
   } else if (alreadyPressed && timeToRelease) {
     if (millis() >= timeToRelease)  {
