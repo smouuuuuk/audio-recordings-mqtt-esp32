@@ -19,9 +19,13 @@ long lastMsg = 0;
 char msg[50];
 int value = 0;
 
-int buttonInput = 13;
-bool alreadyPressed = false;
-int timeToRelease = 0;
+int buttonInputSend = 13;
+bool alreadyPressedSend = false;
+int timeToReleaseSend = 0;
+
+int buttonInputReceive = 12;
+bool alreadyPressedReceive = false;
+int timeToReleaseReceive = 0;
 
 void setup() {
   Serial.begin(115200);
@@ -45,7 +49,8 @@ void setup() {
   client.setServer(mqtt_server, 1883);
   client.setCallback(callback);
 
-  pinMode(buttonInput, INPUT_PULLDOWN);
+  pinMode(buttonInputSend, INPUT_PULLDOWN);
+  pinMode(buttonInputReceive, INPUT_PULLDOWN);
 }
 
 void callback(char* topic, byte* message, unsigned int length) {
@@ -71,7 +76,7 @@ void reconnect() {
     if (client.connect("ESP32Client", mqtt_user, mqtt_psswd)) {
       Serial.println("connected");
       // Subscribe
-      client.subscribe("testTopic");
+      client.subscribe("esp1/testTopic");
     } else {
       Serial.print("failed, rc=");
       Serial.print(client.state());
@@ -83,16 +88,28 @@ void reconnect() {
 }
 
 void checkIfButtonPressed(){
-  if (digitalRead(buttonInput) && !alreadyPressed) {
-    alreadyPressed = true;
-    client.publish("esp1/testTopic", "Test Message from ESP1");
+  if (digitalRead(buttonInputSend) && !alreadyPressedSend) {
+    alreadyPressedSend = true;
+    client.publish("esp1/testTopic", "Send Message from ESP1");
     Serial.println("Message Sent to esp1/testTopic");
-  } else if (alreadyPressed && !timeToRelease && !digitalRead(buttonInput)) {
-    timeToRelease = millis() + 500;
-  } else if (alreadyPressed && timeToRelease) {
-    if (millis() >= timeToRelease)  {
-      alreadyPressed = false;
-      timeToRelease = 0;
+  } else if (alreadyPressedSend && !timeToReleaseSend && !digitalRead(buttonInputSend)) {
+    timeToReleaseSend = millis() + 500;
+  } else if (alreadyPressedSend && timeToReleaseSend) {
+    if (millis() >= timeToReleaseSend)  {
+      alreadyPressedSend = false;
+      timeToReleaseSend = 0;
+    }
+  }
+  if (digitalRead(buttonInputReceive) && !alreadyPressedReceive) {
+    alreadyPressedReceive = true;
+    client.publish("esp1/testTopic", "Receive Message from ESP1");
+    Serial.println("Message Sent to esp1/testTopic");
+  } else if (alreadyPressedReceive && !timeToReleaseReceive && !digitalRead(buttonInputReceive)) {
+    timeToReleaseReceive = millis() + 500;
+  } else if (alreadyPressedReceive && timeToReleaseReceive) {
+    if (millis() >= timeToReleaseReceive)  {
+      alreadyPressedReceive = false;
+      timeToReleaseReceive = 0;
     }
   }
 }
@@ -102,7 +119,5 @@ void loop() {
     reconnect();
   }
   client.loop();
-
-  checkIfButtonPressed();  
-  
+  checkIfButtonPressed();
 }
