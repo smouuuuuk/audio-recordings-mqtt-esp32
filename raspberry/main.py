@@ -8,10 +8,9 @@ import secrets
 
 script_dir = os.path.realpath(__file__).split("main.py")[0]
 
-def get_files(path):
-    for file in os.listdir(path):
-        if os.path.isfile(os.path.join(path, file)):
-            yield file
+def remove_readme_from_list(list):
+    list.remove("README.md")
+    return list
 
 def on_connect(client, userdata, flags, rc):
     print("Connected with result code "+str(rc))
@@ -36,7 +35,7 @@ def on_message(client, userdata, msg):
         f.close()
 
     elif (msg.topic == "esp1/receiveData"):
-        fileToSend = script_dir+"esp1/"+os.listdir(os.getcwd()+"/esp1")[0]
+        fileToSend = script_dir+"esp1/"+remove_readme_from_list(os.listdir(os.getcwd()+"/esp1"))[0]
         f = open(fileToSend, "r")
         data = f.read()
         f.close()
@@ -44,8 +43,8 @@ def on_message(client, userdata, msg):
             os.remove(fileToSend)
 
     elif (msg.topic == "esp2/receiveData"):
-        fileToSend = os.listdir(os.getcwd()+"/esp2")[0]
-        f = open(script_dir+"esp2/"+fileToSend, "r")
+        fileToSend = script_dir+"esp1/"+remove_readme_from_list(os.listdir(os.getcwd()+"/esp2"))[0]
+        f = open(fileToSend, "r")
         data = f.read()
         f.close()
         client.publish("esp2/readData", data, qos=2)
