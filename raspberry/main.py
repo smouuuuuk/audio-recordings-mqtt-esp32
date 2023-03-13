@@ -37,13 +37,13 @@ def on_message(client, userdata, msg):
 
     elif (msg.topic == "esp1/receiveData"):
         fileToSend = os.listdir(os.getcwd()+"/esp1")[0]
-        f = open(fileToSend, "r")
+        f = open(script_dir+"esp1/"+fileToSend, "r")
         data = f.read()
         client.publish("esp1/readData", data)
 
     elif (msg.topic == "esp2/receiveData"):
         fileToSend = os.listdir(os.getcwd()+"/esp2")[0]
-        f = open(fileToSend, "r")
+        f = open(script_dir+"esp2/"+fileToSend, "r")
         data = f.read()
         client.publish("esp2/readData", data)
 
