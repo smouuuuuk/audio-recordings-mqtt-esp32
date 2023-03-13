@@ -76,7 +76,7 @@ void reconnect() {
     if (client.connect("ESP32Client", mqtt_user, mqtt_psswd)) {
       Serial.println("connected");
       // Subscribe
-      client.subscribe("esp1/receiveData");
+      client.subscribe("esp2/receiveData");
     } else {
       Serial.print("failed, rc=");
       Serial.print(client.state());
@@ -90,8 +90,8 @@ void reconnect() {
 void checkIfButtonPressed(){
   if (digitalRead(buttonInputSend) && !alreadyPressedSend) {
     alreadyPressedSend = true;
-    client.publish("esp1/sendData", "Send Message from ESP1");
-    Serial.println("Message Sent to esp1/sendData");
+    client.publish("esp2/sendData", "Send Message from ESP2");
+    Serial.println("Message Sent to esp2/sendData");
   } else if (alreadyPressedSend && !timeToReleaseSend && !digitalRead(buttonInputSend)) {
     timeToReleaseSend = millis() + 500;
   } else if (alreadyPressedSend && timeToReleaseSend) {
@@ -102,8 +102,8 @@ void checkIfButtonPressed(){
   }
   if (digitalRead(buttonInputReceive) && !alreadyPressedReceive) {
     alreadyPressedReceive = true;
-    client.publish("esp1/receiveData", "Receive Message from ESP1");
-    Serial.println("Message Sent to esp1/receiveData");
+    client.publish("esp2/receiveData", "Receive Message from ESP2");
+    Serial.println("Message Sent to esp2/receiveData");
   } else if (alreadyPressedReceive && !timeToReleaseReceive && !digitalRead(buttonInputReceive)) {
     timeToReleaseReceive = millis() + 500;
   } else if (alreadyPressedReceive && timeToReleaseReceive) {
