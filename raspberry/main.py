@@ -47,7 +47,8 @@ def on_message(client, userdata, msg):
         f = open(fileToSend, "r")
         data = f.read()
         f.close()
-        client.publish("esp2/readData", data, qos=2)
+        if (not client.publish("esp1/readData", data, qos=2)[0]):
+            os.remove(fileToSend)
 
 client = mqtt.Client()
 client.on_connect = on_connect
