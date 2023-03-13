@@ -36,16 +36,19 @@ def on_message(client, userdata, msg):
         f.close()
 
     elif (msg.topic == "esp1/receiveData"):
-        fileToSend = os.listdir(os.getcwd()+"/esp1")[0]
-        f = open(script_dir+"esp1/"+fileToSend, "r")
+        fileToSend = script_dir+"esp1/"+os.listdir(os.getcwd()+"/esp1")[0]
+        f = open(fileToSend, "r")
         data = f.read()
-        client.publish("esp1/readData", data)
+        f.close()
+        if (not client.publish("esp1/readData", data, qos=2)[0]):
+            os.remove(fileToSend)
 
     elif (msg.topic == "esp2/receiveData"):
         fileToSend = os.listdir(os.getcwd()+"/esp2")[0]
         f = open(script_dir+"esp2/"+fileToSend, "r")
         data = f.read()
-        client.publish("esp2/readData", data)
+        f.close()
+        client.publish("esp2/readData", data, qos=2)
 
 client = mqtt.Client()
 client.on_connect = on_connect
