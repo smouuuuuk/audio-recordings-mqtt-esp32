@@ -41,8 +41,9 @@ def on_message(client, userdata, msg):
             data = f.read()
             f.close()
         except IndexError:
+            fileToSend = ''
             data = "No data to send"
-        if (not client.publish("esp1/readData", data, qos=2)[0]):
+        if (not client.publish("esp1/readData", data, qos=2)[0] and fileToSend):
             os.remove(fileToSend)
 
     elif (msg.topic == "esp2/receiveData"):
@@ -52,8 +53,9 @@ def on_message(client, userdata, msg):
             data = f.read()
             f.close()
         except:
+            fileToSend = ''
             data = "No data to send"
-        if (not client.publish("esp2/readData", data, qos=2)[0]):
+        if (not client.publish("esp2/readData", data, qos=2)[0] and fileToSend):
             os.remove(fileToSend)
 
 client = mqtt.Client()
