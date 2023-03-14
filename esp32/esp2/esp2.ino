@@ -76,7 +76,7 @@ void reconnect() {
     if (client.connect("ESP32Client-2", mqtt_user, mqtt_psswd)) {
       Serial.println("connected");
       // Subscribe
-      client.subscribe("esp2/receiveData");
+      client.subscribe("esp2/readData");
     } else {
       Serial.print("failed, rc=");
       Serial.print(client.state());
